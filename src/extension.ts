@@ -54,7 +54,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(disposable);
 
 	vscode.window.showInformationMessage('Take a break set for 30 minutes.');
-	vscode.window.showInformationMessage('To reset the timer: Ctrl+Shift+P: Reset Timer');
+	vscode.window.showInformationMessage('To reset the timer: Ctrl+Alt+G');
 }
 
 

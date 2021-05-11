@@ -19,6 +19,13 @@
 				"command": "takeabreak.resetTimer",
 				"title": "Reset Timer"
 			}
+		],
+		"keybindings": [
+			{
+				"command": "takeabreak.resetTimer",
+				"key": "ctrl+alt+g",
+				"mac": "ctrl+alt+g"
+			}
 		]
 	},
 	"scripts": {
