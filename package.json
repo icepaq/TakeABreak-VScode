@@ -3,6 +3,7 @@
 	"displayName": "TakeABreak",
 	"description": "Reminds you to take a break",
 	"version": "0.0.1",
+	"publisher": "icepaq",
 	"engines": {
 		"vscode": "^1.56.0"
 	},

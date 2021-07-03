@@ -2,59 +2,83 @@ import * as vscode from 'vscode';
 
 let firstRun = true;
 let cursor = {
-	line: 0,
-	character: 0
+    line: 0,
+    character: 0
 };
 
+let cursorHistory = [{ line: 0, character: 0 }];
 
-function checkCursor() {
+let afk = false;
+let timerOn = false;
+let timerStart : number;
 
-	console.log('checkCursor');
-	let editor = vscode.window.activeTextEditor;
 
-	if (editor) {
-		let active = editor.selection.active;
-		let newCursor = {
-			line: active.line,
-			character: active.line
-		};
+function checkTimer() {
+    if(timerOn && Date.now() - timerStart > 1200000) {
+        vscode.window.showInformationMessage('Time to take a break! Reset the timer when you get back!');
+        timerStart = Date.now();
+    }
+}
 
-		// REF INIT
-		if (firstRun) {
-			firstRun = false;
-			cursor = newCursor;
-			return;
-		}
+function startTimer() {
+    timerStart = Date.now();
+    timerOn = true;
+}
 
-		// See if the cursor is at a new location
-		if (cursor.line !== active.line && cursor.character !== active.character) {
-			vscode.window.showInformationMessage('Reset the timer when you come back.');
-			vscode.window.showInformationMessage('Get some exercise.');
-			vscode.window.showInformationMessage('It is time to take a break.');
-			
-		}
-		cursor = newCursor;
-	}
+function logActivity() {
+    if (!vscode.window.activeTextEditor) {
+        return;
+    }
+    const cursor = {
+        line: vscode.window.activeTextEditor.selection.active.line,
+        character: vscode.window.activeTextEditor.selection.active.character
+    };
+
+    if(!afk && !timerOn) {
+        startTimer();
+    }
+
+    cursorHistory.push(cursor);
+}
+
+function checkAFK() {
+
+    console.log('Checking AFK');
+    let checkL = cursorHistory[cursorHistory.length - 1].line;
+    let checkC = cursorHistory[cursorHistory.length - 1].character;
+
+    
+    for (let i = cursorHistory.length - 1; i > cursorHistory.length - 10; i--) {
+        if (cursorHistory[i].line !== checkL || cursorHistory[i].character !== checkC) {
+            afk = false;
+            return;
+        }
+        afk = true;
+        timerOn = false;
+    }
+
+    vscode.window.showInformationMessage('You have been gone for 5 minutes. See you soon!');
 }
 
 export function activate(context: vscode.ExtensionContext) {
 
-	let intervalLength = 1800000;
-	let interval = setInterval(checkCursor, intervalLength); // Check activity will be called every 30 minutes
-	checkCursor(); // Initialize the project. See REF INIT
+    setInterval(logActivity, 6000); // Log activity
+    logActivity();
 
-	let disposable = vscode.commands.registerCommand('takeabreak.resetTimer', () => {
+    setInterval(checkAFK, 60000);
+    checkAFK();
 
-		clearInterval(interval);
-		interval = setInterval(checkCursor, intervalLength);
+    setInterval(checkTimer, 10000);
 
-		vscode.window.showInformationMessage('Timer Reset.');
-	});
+    let disposable = vscode.commands.registerCommand('takeabreak.resetTimer', () => {
+        timerStart = Date.now();
+        vscode.window.showInformationMessage('Timer Reset.');
+    });
 
-	context.subscriptions.push(disposable);
+    context.subscriptions.push(disposable);
 
-	vscode.window.showInformationMessage('Take a break set for 30 minutes.');
-	vscode.window.showInformationMessage('To reset the timer: Ctrl+Alt+G');
+    vscode.window.showInformationMessage('Take a break set for 30 minutes.');
+    vscode.window.showInformationMessage('To reset the timer: Ctrl+Alt+G');
 }
 
 
