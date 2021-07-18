@@ -27,7 +27,19 @@
 				"key": "ctrl+alt+g",
 				"mac": "ctrl+alt+g"
 			}
-		]
+		],
+        "configuration": [
+            {
+                "type": "object",
+                "properties": {
+                    "takeabreak.interval": {
+                        "type": "integer",
+                        "default": 30,
+                        "description": "Time in minutes between each reminder"
+                    }
+                }
+            }
+        ]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
