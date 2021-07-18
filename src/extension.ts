@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-const Timers = require('./Timers');
+const timers = require('./Timers');
 
 let firstRun = true;
 let cursor = {
@@ -11,16 +11,16 @@ let cursor = {
 
 export function activate(context: vscode.ExtensionContext) {
 
-    setInterval(Timers.logActivity, 6000); // Log activity
-    Timers.logActivity();
+    setInterval(timers.logActivity, 6000); // Log activity
+    timers.logActivity();
 
-    setInterval(Timers.checkAFK, 60000);
-    Timers.checkAFK();
+    setInterval(timers.checkAFK, 60000);
+    timers.checkAFK();
 
-    setInterval(Timers.checkTimer, 10000);
+    setInterval(timers.checkTimer, 10000);
 
     let disposable = vscode.commands.registerCommand('takeabreak.resetTimer', () => {
-        Timers.timerStart = Date.now();
+        timers.timerStart = Date.now();
         vscode.window.showInformationMessage('Timer Reset.');
     });
 
