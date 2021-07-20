@@ -36,6 +36,11 @@
                         "type": "integer",
                         "default": 30,
                         "description": "Time in minutes between each reminder"
+                    },
+                    "takeabreak.afkreset": {
+                        "type": "integer",
+                        "default": 5,
+                        "description": "AFK Reset"
                     }
                 }
             }

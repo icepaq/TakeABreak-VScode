@@ -15,8 +15,7 @@ export function activate(context: vscode.ExtensionContext) {
     let interval = vscode.workspace.getConfiguration().get('takeabreak.interval');
     let afkreset = vscode.workspace.getConfiguration().get('takeabreak.afkreset');
 
-    setInterval(timers.logActivity, 6000); // Log activity
-    timers.logActivity();
+    
 
     if (typeof interval === 'number') {
         console.log("Setting interval for: " + interval * 60000);
@@ -30,13 +29,20 @@ export function activate(context: vscode.ExtensionContext) {
         timers.setInterval(1800000);
     }
     
-    //timers.checkAFK();
+    if (typeof afkreset === 'number') {
+        console.log("Setting afkreset for: " + afkreset * 60000);
+        timers.setAfkReset(afkreset * 60000);
+    } else {
+        console.log("Invalid afkreset setting");
+        timers.setAfkReset(60000);
+    }
 
     setInterval(timers.checkTimer, 10000);
-    //setInterval(timers.checkAFK, 10000);
+    setInterval(timers.checkAFK, 10000);
+    setInterval(timers.logActivity, 10000);
 
     let disposable = vscode.commands.registerCommand('takeabreak.resetTimer', () => {
-        timers.timerStart = Date.now();
+        timers.setTimerStart(Date.now());
         vscode.window.showInformationMessage('Timer Reset.');
     });
 

@@ -6,6 +6,15 @@ let afk = false;
 let timerOn = false;
 let timerStart : number;
 let interval: number;
+let afkreset: number;
+
+export function setTimerStart (time: number) {
+    timerStart = time;
+}
+
+export function setAfkReset(value: number) {
+    afkreset = value;
+}
 
 export function setInterval(time: number) {
     interval = time;
@@ -53,16 +62,23 @@ export function checkAFK() {
     let checkL = cursorHistory[cursorHistory.length - 1].line;
     let checkC = cursorHistory[cursorHistory.length - 1].character;
 
-    
-    // 
-    for (let i = cursorHistory.length - 1; i > cursorHistory.length - 10; i--) {
+    if(cursorHistory.length < afkreset / 10000) {
+        console.log('Not enough history to check afk');
+        return;
+    }
+
+    for (let i = cursorHistory.length - 1; i > cursorHistory.length - (afkreset / 10000); i--) {
         if (cursorHistory[i].line !== checkL || cursorHistory[i].character !== checkC) {
             afk = false;
+            timerOn = true;
+            console.log('Activity Found');
             return;
         }
         afk = true;
         timerOn = false;
     }
+
+    console.log('Timer has been disabled');
 
     vscode.window.showInformationMessage('You have been gone for 5 minutes. See you soon!');
 }
