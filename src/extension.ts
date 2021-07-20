@@ -19,16 +19,21 @@ export function activate(context: vscode.ExtensionContext) {
     timers.logActivity();
 
     if (typeof interval === 'number') {
-        console.log("Settings is a number: " + interval);
-        setInterval(timers.checkAFK, interval * 60000);
+        console.log("Setting interval for: " + interval * 60000);
+        timers.setInterval(interval * 60000);
+
+        vscode.window.showInformationMessage('Take a break set for ' + interval + ' minutes');
+        vscode.window.showInformationMessage('To reset the timer: Ctrl+Alt+G');
+
     } else {
         console.log("Invalid interval setting");
-        setInterval(timers.checkAFK, 1800000);
+        timers.setInterval(1800000);
     }
     
-    timers.checkAFK();
+    //timers.checkAFK();
 
     setInterval(timers.checkTimer, 10000);
+    //setInterval(timers.checkAFK, 10000);
 
     let disposable = vscode.commands.registerCommand('takeabreak.resetTimer', () => {
         timers.timerStart = Date.now();
@@ -38,9 +43,6 @@ export function activate(context: vscode.ExtensionContext) {
     
 
     context.subscriptions.push(disposable);
-
-    vscode.window.showInformationMessage('Take a break set for 30 minutes.');
-    vscode.window.showInformationMessage('To reset the timer: Ctrl+Alt+G');
 }
 
 

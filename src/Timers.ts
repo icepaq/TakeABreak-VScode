@@ -5,11 +5,16 @@ let cursorHistory = [{ line: 0, character: 0 }];
 let afk = false;
 let timerOn = false;
 let timerStart : number;
+let interval: number;
 
+export function setInterval(time: number) {
+    interval = time;
+}
 
 // If the timer is on and has been running for more than the interval, notify the user
 export function checkTimer() {
-    if(timerOn && Date.now() - timerStart > 1200000) {
+    console.log(timerStart);
+    if(timerOn && Date.now() - timerStart > interval) {
         vscode.window.showInformationMessage('Time to take a break! Reset the timer when you get back!');
         timerStart = Date.now();
     }
@@ -44,11 +49,12 @@ export function logActivity() {
 // Check if the user is AFK and if so, reset the timer.
 export function checkAFK() {
 
-    console.log('Checking AFK');
+    // Get most recent cursor position
     let checkL = cursorHistory[cursorHistory.length - 1].line;
     let checkC = cursorHistory[cursorHistory.length - 1].character;
 
     
+    // 
     for (let i = cursorHistory.length - 1; i > cursorHistory.length - 10; i--) {
         if (cursorHistory[i].line !== checkL || cursorHistory[i].character !== checkC) {
             afk = false;
