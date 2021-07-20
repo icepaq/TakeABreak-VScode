@@ -12,4 +12,4 @@ The timer will reset if you have been idle for 5 minutes.
 Ctrl+Alt+G resets the timer
 
 To adjust the interval of your breaks, add the following line to your .vscode/settings.json file: 
-`"takeabreak.interval": 1,`
+`"takeabreak.interval": 1,` where 1 is your interval in minutes.
