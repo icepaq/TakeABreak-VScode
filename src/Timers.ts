@@ -36,8 +36,13 @@ export function startTimer() {
 
 export function logActivity() {
 
-    // If the user is not editing a file, then we don't want to log their activity
+    // If the user is not in a file, log (0, 0)
     if (!vscode.window.activeTextEditor) {
+        const cursor = {
+            line: 0,
+            character: 0
+        };
+        cursorHistory.push(cursor);
         return;
     }
 
@@ -62,18 +67,22 @@ export function checkAFK() {
     let checkL = cursorHistory[cursorHistory.length - 1].line;
     let checkC = cursorHistory[cursorHistory.length - 1].character;
 
+    // We need to make sure that there is at least 'afkreset' seconds in history
     if(cursorHistory.length < afkreset / 10000) {
         console.log('Not enough history to check afk');
         return;
     }
 
+    // Over here, we are checking `afkreset` steps in the past. For example, if afk reset is 10000 we check 10 steps in the past.
     for (let i = cursorHistory.length - 1; i > cursorHistory.length - (afkreset / 10000); i--) {
+        // If at least one of the lines is different, the user is not afk
         if (cursorHistory[i].line !== checkL || cursorHistory[i].character !== checkC) {
             afk = false;
             timerOn = true;
             console.log('Activity Found');
             return;
         }
+        // Turn off the timer and set afk to true. This is used for checkTimer()
         afk = true;
         timerOn = false;
     }

@@ -1,13 +1,6 @@
 import * as vscode from 'vscode';
 const timers = require('./Timers');
 
-let firstRun = true;
-let cursor = {
-    line: 0,
-    character: 0
-};
-
-
 export function activate(context: vscode.ExtensionContext) {
 
     console.log("Extension Activated");
@@ -16,7 +9,7 @@ export function activate(context: vscode.ExtensionContext) {
     let afkreset = vscode.workspace.getConfiguration().get('takeabreak.afkreset');
 
     
-
+    // Set the interval for the timer and start it
     if (typeof interval === 'number') {
         console.log("Setting interval for: " + interval * 60000);
         timers.setInterval(interval * 60000);
@@ -29,6 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
         timers.setInterval(1800000);
     }
     
+    // This looks for when you have been gone for more than the set interval
     if (typeof afkreset === 'number') {
         console.log("Setting afkreset for: " + afkreset * 60000);
         timers.setAfkReset(afkreset * 60000);
@@ -44,9 +38,7 @@ export function activate(context: vscode.ExtensionContext) {
     let disposable = vscode.commands.registerCommand('takeabreak.resetTimer', () => {
         timers.setTimerStart(Date.now());
         vscode.window.showInformationMessage('Timer Reset.');
-    });
-
-    
+    });    
 
     context.subscriptions.push(disposable);
 }
